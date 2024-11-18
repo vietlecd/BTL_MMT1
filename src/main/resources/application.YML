@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: btl_mmt1
+  data:
+    mongodb:
+      uri: ${MONGO_DB_URI}
+      database: ${MONGO_DB_NAME}
+      auto-index-creation: on
+
+
+

@@ -30,10 +30,14 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+			<version>3.3.4</version>
 		</dependency>
+
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -49,6 +53,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.github.cdimascio/java-dotenv -->
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>java-dotenv</artifactId>
+			<version>5.2.2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
