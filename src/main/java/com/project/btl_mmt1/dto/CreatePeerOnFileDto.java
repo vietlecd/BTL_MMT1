@@ -9,9 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 public class CreatePeerOnFileDto {
     private String infoHash;
-    private String fileName;
-    private long fileSize;
+//    private String fileName;
+//    private long fileSize;
     private String peerAddress;
     private int peerPort;
+    private Status status;
+
 }
 

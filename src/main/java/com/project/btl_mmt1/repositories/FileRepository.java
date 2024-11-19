@@ -1,7 +1,6 @@
 package com.project.btl_mmt1.repositories;
 
-import com.project.btl_mmt1.entity.File;
-import io.micrometer.observation.ObservationFilter;
+import com.project.btl_mmt1.models.File;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

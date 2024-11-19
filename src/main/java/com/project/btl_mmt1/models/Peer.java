@@ -1,4 +1,4 @@
-package com.project.btl_mmt1.entity;
+package com.project.btl_mmt1.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

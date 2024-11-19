@@ -10,5 +10,12 @@ spring:
       database: ${MONGO_DB_NAME}
       auto-index-creation: on
 
+api:
+  prefix: api
+jwt:
+  expiration: 360 # 1 hour
+  secretKey: ${JWT_SECRET_KEY}
+
+
 
 

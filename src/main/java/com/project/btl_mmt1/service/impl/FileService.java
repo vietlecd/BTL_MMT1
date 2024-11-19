@@ -1,16 +1,16 @@
-package com.project.btl_mmt1.service;
+package com.project.btl_mmt1.service.impl;
 import com.project.btl_mmt1.dto.CreatePeerOnFileDto;
 import com.project.btl_mmt1.dto.UploadFileDto;
-import com.project.btl_mmt1.entity.File;
-import com.project.btl_mmt1.entity.Peer;
-import com.project.btl_mmt1.entity.PeerOnFile;
+import com.project.btl_mmt1.models.File;
+import com.project.btl_mmt1.models.Peer;
+import com.project.btl_mmt1.models.PeerOnFile;
 import com.project.btl_mmt1.repositories.FileRepository;
 import com.project.btl_mmt1.repositories.PeerOnFileRepository;
 import com.project.btl_mmt1.repositories.PeerRepository;
+import com.project.btl_mmt1.service.IFileService;
+import com.project.btl_mmt1.service.IPeerOnFileService;
+import com.project.btl_mmt1.service.IPeerService;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
-public class FileService implements IFileService{
+public class FileService implements IFileService {
     private FileRepository fileRepository;
     private IPeerService peerService;
     private PeerOnFileRepository peerOnFileRepository;
@@ -46,7 +46,7 @@ public class FileService implements IFileService{
         File newFile = File.builder()
                 .hashInfo(dto.getHashInfo())
                 .name(dto.getName())
-                .trackerUrl("http://localhost:3000")
+                .trackerUrl("http://localhost:8080/api")
                 .size(dto.getSize())
                 .build();
         fileRepository.save(newFile);
@@ -82,9 +82,8 @@ public class FileService implements IFileService{
             File file = fileRepository.findByHashInfo(dto.getInfoHash()).orElseGet(() -> {
                 File newFile = new File();
                 newFile.setHashInfo(dto.getInfoHash());
-                newFile.setName(dto.getFileName());
-                newFile.setSize(dto.getFileSize());
-                newFile.setTrackerUrl("http://localhost:3000");
+                newFile.setTrackerUrl("http://localhost:8080/api");
+
                 return fileRepository.save(newFile);
             });
 

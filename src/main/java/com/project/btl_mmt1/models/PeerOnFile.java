@@ -1,4 +1,4 @@
-package com.project.btl_mmt1.entity;
+package com.project.btl_mmt1.models;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -20,5 +20,7 @@ public class PeerOnFile {
 
     @DBRef
     private Peer peerId;
+
+    private PeerRole peerRole;
 
 }

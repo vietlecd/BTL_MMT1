@@ -1,14 +1,15 @@
-package com.project.btl_mmt1.service;
+package com.project.btl_mmt1.service.impl;
 
-import com.project.btl_mmt1.entity.File;
-import com.project.btl_mmt1.entity.Peer;
-import com.project.btl_mmt1.entity.PeerOnFile;
+import com.project.btl_mmt1.models.File;
+import com.project.btl_mmt1.models.Peer;
+import com.project.btl_mmt1.models.PeerOnFile;
 import com.project.btl_mmt1.repositories.PeerOnFileRepository;
+import com.project.btl_mmt1.service.IPeerOnFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PeerOnFileService implements IPeerOnFileService{
+public class PeerOnFileService implements IPeerOnFileService {
     @Autowired
     private PeerOnFileRepository peerOnFileRepository;
     @Override

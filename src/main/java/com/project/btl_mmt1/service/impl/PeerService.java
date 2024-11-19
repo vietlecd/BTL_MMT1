@@ -1,11 +1,12 @@
-package com.project.btl_mmt1.service;
-import com.project.btl_mmt1.entity.Peer;
+package com.project.btl_mmt1.service.impl;
+import com.project.btl_mmt1.models.Peer;
 import com.project.btl_mmt1.repositories.PeerRepository;
+import com.project.btl_mmt1.service.IPeerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PeerService implements IPeerService{
+public class PeerService implements IPeerService {
     @Autowired
     private PeerRepository peerRepository;
 
