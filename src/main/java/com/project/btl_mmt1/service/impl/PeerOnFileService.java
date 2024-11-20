@@ -9,6 +9,7 @@ import com.project.btl_mmt1.models.PeerRole;
 import com.project.btl_mmt1.repositories.FileRepository;
 import com.project.btl_mmt1.repositories.PeerOnFileRepository;
 import com.project.btl_mmt1.repositories.PeerRepository;
+import com.project.btl_mmt1.responses.AnnounceResponseDTO;
 import com.project.btl_mmt1.responses.ScrapeDTO;
 import com.project.btl_mmt1.service.IPeerOnFileService;
 import com.project.btl_mmt1.service.IPeerService;
@@ -67,7 +68,7 @@ public class PeerOnFileService implements IPeerOnFileService {
     }
 
     @Override
-    public ResponseEntity<PeerOnFile> announce(AnnounceDTO dto) {
+    public ResponseEntity<AnnounceResponseDTO> announce(AnnounceDTO dto) {
 
         File existedFile = fileRepository.findByHashInfo(dto.getInfoHash())
                 .orElseThrow(() -> new DataNotFoundException("File không tồn tại"));
@@ -89,7 +90,13 @@ public class PeerOnFileService implements IPeerOnFileService {
 
             PeerOnFile peerOnFile = update(peer, existedFile, PeerRole.LEECHER);
 
-            return ResponseEntity.ok(peerOnFile);
+            AnnounceResponseDTO res = AnnounceResponseDTO.builder()
+                    .file_name(existedFile.getName())
+                    .size(existedFile.getName())
+                    .address(existedPeer.get().getAddress())
+                    .build();
+
+            return ResponseEntity.ok(res);
         }
 
         if ("COMPLETED".equals(dto.getStatus().name())) {
@@ -102,7 +109,13 @@ public class PeerOnFileService implements IPeerOnFileService {
             }
 
             PeerOnFile peerOnFile = update(peer, existedFile, PeerRole.SEEDER);
-            return ResponseEntity.ok(peerOnFile);
+
+            AnnounceResponseDTO res = AnnounceResponseDTO.builder()
+                    .file_name(existedFile.getName())
+                    .size(existedFile.getName())
+                    .address(existedPeer.get().getAddress())
+                    .build();
+            return ResponseEntity.ok(res);
         }
 
         throw new IllegalArgumentException("Invalid status: " + dto.getStatus());

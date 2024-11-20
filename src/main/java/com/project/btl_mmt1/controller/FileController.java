@@ -5,6 +5,7 @@ import com.project.btl_mmt1.helpers.AuthenticationHelper;
 import com.project.btl_mmt1.models.File;
 import com.project.btl_mmt1.models.PeerOnFile;
 import com.project.btl_mmt1.models.User;
+import com.project.btl_mmt1.responses.AnnounceResponseDTO;
 import com.project.btl_mmt1.responses.FileResponseDto;
 import com.project.btl_mmt1.service.IFileService;
 import com.project.btl_mmt1.dto.AnnounceDTO;
@@ -32,6 +33,16 @@ public class FileController {
     private final AuthenticationHelper authenticationHelper;
     private final IPeerOnFileService peerOnFileService;
     private final IPeerService peerService;
+
+    @GetMapping("/fetch_all")
+    public ResponseEntity<?> search() {
+        try {
+            List<?> files = fileService.find_all();
+            return ResponseEntity.ok(files);
+        } catch (Error e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+    }
     @GetMapping("/fetch")
     public ResponseEntity<?> search(@RequestParam(required = false) String hashInfo) {
         try {
@@ -67,7 +78,7 @@ public class FileController {
     @PostMapping("/peers/announce")
     public ResponseEntity<?> createPeerOnFile(@RequestBody AnnounceDTO announceDTO) {
         try {
-            PeerOnFile peerOnFile = peerOnFileService.announce(announceDTO).getBody();
+            AnnounceResponseDTO peerOnFile = peerOnFileService.announce(announceDTO).getBody();
             return ResponseEntity.status(201).body(peerOnFile);
         } catch (ResponseStatusException e) {
             return ResponseEntity

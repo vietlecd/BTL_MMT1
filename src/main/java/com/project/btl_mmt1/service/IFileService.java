@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface IFileService {
+    List<?> find_all();
     List<?> search(String hashInfo);
 
     FileResponseDto create(UploadFileDto dto, User user);
