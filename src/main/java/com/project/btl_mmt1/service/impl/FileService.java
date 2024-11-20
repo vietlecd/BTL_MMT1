@@ -9,6 +9,7 @@ import com.project.btl_mmt1.repositories.FileRepository;
 import com.project.btl_mmt1.repositories.PeerOnFileRepository;
 import com.project.btl_mmt1.repositories.PeerRepository;
 import com.project.btl_mmt1.repositories.UserRepository;
+import com.project.btl_mmt1.responses.FetchResponseDTO;
 import com.project.btl_mmt1.responses.FileResponseDto;
 import com.project.btl_mmt1.service.IFileService;
 import com.project.btl_mmt1.service.IPeerOnFileService;
@@ -34,13 +35,30 @@ public class FileService implements IFileService {
     private UserRepository userRepository;
 
     @Override
-    public List<File> search(String hashInfo) {
-        if (hashInfo != null && !hashInfo.isEmpty()) {
-            return fileRepository.findByHashInfo(hashInfo)
-                    .map(Arrays::asList)
-                    .orElse(Collections.emptyList());
+    public List<?> search(String hashInfo) {
+        List<FetchResponseDTO> responseList = new ArrayList<>();
+
+        Optional<File> fileOptional =  fileRepository.findByHashInfo(hashInfo);
+        if (fileOptional.isEmpty()) {
+            throw new RuntimeException("Khong co file nay");
         }
-        return fileRepository.findAll();
+
+        File file = fileOptional.get();
+
+        User user = file.getUser();
+        String user_fullname = user.getFullName();
+
+        List<Peer> peerList = file.getPeers();
+
+        for (Peer peer : peerList) {
+            FetchResponseDTO fetch = FetchResponseDTO.builder()
+                    .address(peer.getAddress())
+                    .port(peer.getPort())
+                    .fullName(user_fullname)
+                    .build();
+            responseList.add(fetch);
+        }
+        return responseList;
     }
 
     @Override

@@ -35,7 +35,7 @@ public class FileController {
     @GetMapping("/fetch")
     public ResponseEntity<?> search(@RequestParam(required = false) String hashInfo) {
         try {
-            List<File> files = fileService.search(hashInfo);
+            List<?> files = fileService.search(hashInfo);
             return ResponseEntity.ok(files);
         } catch (Error e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
@@ -46,10 +46,6 @@ public class FileController {
         try {
             User user = null;
 
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
-//                user = (User) authentication.getPrincipal();
-//            }
             if ( authentication != null ){
                 user = authenticationHelper.getUser(authentication);
             }
