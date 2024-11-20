@@ -13,7 +13,7 @@ import lombok.*;
 @Builder
 public class SignupDTO {
 
-    @JsonProperty("fullName")
+    @JsonProperty("fullname")
     @NotBlank(message = "fullname is required")
     private String fullName;
 

@@ -35,8 +35,15 @@ public class WebSecurityConfig {
                             .requestMatchers(
                                     String.format("%s/users/register", apiPrefix),
                                     String.format("%s/users/login", apiPrefix)
+                                    //String.format("%s/files/publish", apiPrefix)
                             )
                             .permitAll()
+//                            .requestMatchers(String.format("%s/files/**", apiPrefix)).authenticated()
+//                            .requestMatchers(POST,
+//                                    String.format("%s/users/logout", apiPrefix)).authenticated()
+//                            .requestMatchers(POST,
+//                                    String.format("%s/files/peers/announce", apiPrefix)).authenticated()
+
 
                             .anyRequest().authenticated();
 

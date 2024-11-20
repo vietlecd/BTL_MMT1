@@ -1,26 +1,30 @@
 package com.project.btl_mmt1.models;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+
+import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "peer_on_files")
+@Entity
+@Table(name = "peer_on_files")
 public class PeerOnFile {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @DBRef
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id", nullable = false, referencedColumnName = "id")
     private File fileId;
 
-    @DBRef
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "peer_id", nullable = false, referencedColumnName = "id")
     private Peer peerId;
 
+    @Enumerated(EnumType.STRING)
     private PeerRole peerRole;
-
 }

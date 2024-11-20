@@ -1,21 +1,27 @@
 package com.project.btl_mmt1.service.impl;
-import com.project.btl_mmt1.dto.CreatePeerOnFileDto;
+import com.project.btl_mmt1.customexceptions.DataNotFoundException;
+import com.project.btl_mmt1.customexceptions.InvalidParamException;
+import com.project.btl_mmt1.customexceptions.PermissionDenyException;
+import com.project.btl_mmt1.dto.AnnounceDTO;
 import com.project.btl_mmt1.dto.UploadFileDto;
-import com.project.btl_mmt1.models.File;
-import com.project.btl_mmt1.models.Peer;
-import com.project.btl_mmt1.models.PeerOnFile;
+import com.project.btl_mmt1.models.*;
 import com.project.btl_mmt1.repositories.FileRepository;
 import com.project.btl_mmt1.repositories.PeerOnFileRepository;
 import com.project.btl_mmt1.repositories.PeerRepository;
+import com.project.btl_mmt1.repositories.UserRepository;
+import com.project.btl_mmt1.responses.FileResponseDto;
 import com.project.btl_mmt1.service.IFileService;
 import com.project.btl_mmt1.service.IPeerOnFileService;
 import com.project.btl_mmt1.service.IPeerService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +31,7 @@ public class FileService implements IFileService {
     private PeerOnFileRepository peerOnFileRepository;
     private IPeerOnFileService peerOnFileService;
     private PeerRepository peerRepository;
+    private UserRepository userRepository;
 
     @Override
     public List<File> search(String hashInfo) {
@@ -37,76 +44,51 @@ public class FileService implements IFileService {
     }
 
     @Override
-    public File create(UploadFileDto dto) {
-        Optional<File> fileOps = fileRepository.findByHashInfo(dto.getHashInfo());
-        if (fileOps.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Giay already have");
+    public FileResponseDto create(UploadFileDto dto, User user) {
+        if (user != null && !userRepository.existsByUsername(user.getUsername())) {
+            throw new DataNotFoundException("Khong tim thay Username nay");
         }
 
-        File newFile = File.builder()
-                .hashInfo(dto.getHashInfo())
-                .name(dto.getName())
-                .trackerUrl("http://localhost:8080/api")
-                .size(dto.getSize())
-                .build();
-        fileRepository.save(newFile);
+        Optional<File> fileOps = fileRepository.findByHashInfo(dto.getHashInfo());
+        File file = fileOps.orElseGet(() -> {
+            File newFile = File.builder()
+                    .hashInfo(dto.getHashInfo())
+                    .name(dto.getName())
+                    .size(dto.getSize())
+                    .user(user)
+                    .build();
+            return fileRepository.save(newFile); // Lưu vào DB
+        });
 
         Peer existedPeer = peerService.findByAddressAndPort(dto.getPeerAddress(), dto.getPeerPort());
-        if (existedPeer == null ) {
-            peerService.create(dto.getPeerAddress(), dto.getPeerPort());
-        }
-
-        assert existedPeer != null;
-
-        if (existedPeer.getFiles() == null) {
+        if (existedPeer.getFiles() != null) {
+            boolean fileExists = existedPeer.getFiles().stream()
+                    .anyMatch(f -> f.getId().equals(file.getId()));
+            if (fileExists) {
+                throw new RuntimeException("File này đã tồn tại trong danh sách của Peer");
+            }
+        } else {
             existedPeer.setFiles(new ArrayList<>());
         }
-        existedPeer.getFiles().add(newFile);
-        peerRepository.save(existedPeer);
 
-        fileRepository.save(newFile);
+        existedPeer.getFiles().add(file);
+        peerRepository.save(existedPeer); // Cập nhật Peer
 
-        peerOnFileService.create(newFile, existedPeer);
+        PeerOnFile peerOnFile = peerOnFileRepository.findByFileIdAndPeerId(file, existedPeer);
 
-        return newFile;
-    }
-
-    @Override
-    public PeerOnFile createPOFByInfoHashAndPeerAddress(CreatePeerOnFileDto dto) {
-        try {
-            Peer existedPeer = peerService.findByAddressAndPort(dto.getPeerAddress(), dto.getPeerPort());
-            if (existedPeer == null) {
-                existedPeer = peerService.create(dto.getPeerAddress(), dto.getPeerPort());
-            }
-
-            File file = fileRepository.findByHashInfo(dto.getInfoHash()).orElseGet(() -> {
-                File newFile = new File();
-                newFile.setHashInfo(dto.getInfoHash());
-                newFile.setTrackerUrl("http://localhost:8080/api");
-
-                return fileRepository.save(newFile);
-            });
-
-            PeerOnFile peerOnFile = peerOnFileRepository.findByFileIdAndPeerId(file.getId(), existedPeer.getId());
-            if (peerOnFile != null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Announcing failed since your upload has been recorded before");
-            }
-
-
-            if (existedPeer.getFiles() == null) {
-                existedPeer.setFiles(new ArrayList<>());
-            }
-            existedPeer.getFiles().add(file);
-            peerRepository.save(existedPeer);
-
-            peerOnFile = peerOnFileService.create(file, existedPeer);
-
-            return peerOnFile;
-        } catch (ResponseStatusException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
+        if (peerOnFile == null) {
+            peerOnFile = peerOnFileService.create(file, existedPeer, PeerRole.SEEDER);
+//            throw new RuntimeException("Da ton tai roi");
+            return null;
         }
+
+
+        return FileResponseDto.builder()
+                .name(file.getName())
+                .hashInfo(file.getHashInfo())
+                .size(file.getSize())
+                .userId(user.getId())
+                .build();
     }
 
 }

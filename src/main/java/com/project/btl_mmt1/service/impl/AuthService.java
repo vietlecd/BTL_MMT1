@@ -57,24 +57,24 @@ public class AuthService implements IAuthService {
 
     @Override
     public String login(LoginDTO loginDTO) throws Exception {
-        Optional<User> optionalUser = userRepository.findByUsername(loginDTO.getUsername());
-        if(optionalUser.isEmpty()) {
-            throw new DataNotFoundException("Invalid username / password");
-        }
-        //return optionalUser.get();//muốn trả JWT token ?
-        User existingUser = optionalUser.get();
-        //check password
-        if(!passwordEncoder.matches(loginDTO.getPassword(), existingUser.getPassword())) {
-            throw new BadCredentialsException("Wrong username or password");
-        }
+            Optional<User> optionalUser = userRepository.findByUsername(loginDTO.getUsername());
+            if(optionalUser.isEmpty()) {
+                throw new DataNotFoundException("Invalid username / password");
+            }
+            //return optionalUser.get();//muốn trả JWT token ?
+            User existingUser = optionalUser.get();
+            //check password
+            if(!passwordEncoder.matches(loginDTO.getPassword(), existingUser.getPassword())) {
+                throw new BadCredentialsException("Wrong username or password");
+            }
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDTO.getUsername(), loginDTO.getPassword()
-        );
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    loginDTO.getUsername(), loginDTO.getPassword()
+            );
 
-        //authenticate with Java Spring security
-        authenticationManager.authenticate(authenticationToken);
+            //authenticate with Java Spring security
+            authenticationManager.authenticate(authenticationToken);
 
-        return jwtTokenUtil.generateToken(existingUser);
+            return jwtTokenUtil.generateToken(existingUser);
     }
 }

@@ -1,5 +1,5 @@
 package com.project.btl_mmt1.dto;
 
-public enum Status {
+public enum StatusDTO {
     START, STOP, COMPLETED
 }

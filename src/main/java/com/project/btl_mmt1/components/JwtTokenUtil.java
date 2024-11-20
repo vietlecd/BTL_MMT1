@@ -80,7 +80,7 @@ public class JwtTokenUtil {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
-    public boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, User userDetails) {
         String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()))
                 && !isTokenExpired(token); //check hạn của token

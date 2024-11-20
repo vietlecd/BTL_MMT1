@@ -1,26 +1,31 @@
 package com.project.btl_mmt1.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import lombok.*;
+import jakarta.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "peers")
+@Builder
+@Entity
+@Table(name = "peers")
 public class Peer {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String address;
+
     private int port;
 
-    @DBRef
+    @ManyToMany
+    @JoinTable(
+            name = "file_peers",
+            joinColumns = @JoinColumn(name = "peer_id"),
+            inverseJoinColumns = @JoinColumn(name = "file_id")
+    )
     private List<File> files;
 }

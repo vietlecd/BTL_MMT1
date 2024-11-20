@@ -1,12 +1,7 @@
 package com.project.btl_mmt1.models;
 
-
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
 import java.util.List;
 
 @Getter
@@ -14,22 +9,24 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "files")
+@Entity
+@Table(name = "files")
 public class File {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Indexed(unique = true)
+    @Column(unique = true, nullable = false)
     private String hashInfo;
 
     private String name;
 
     private long size;
 
-    @DBRef(lazy = true)
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @DBRef(lazy = true)
+    @ManyToMany(mappedBy = "files")
     private List<Peer> peers;
 }
-
