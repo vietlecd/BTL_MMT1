@@ -5,6 +5,7 @@ import com.project.btl_mmt1.models.File;
 import com.project.btl_mmt1.models.Peer;
 import com.project.btl_mmt1.models.PeerOnFile;
 import com.project.btl_mmt1.models.PeerRole;
+import com.project.btl_mmt1.responses.AnnounceResponseDTO;
 import com.project.btl_mmt1.responses.ScrapeDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -17,7 +18,7 @@ public interface IPeerOnFileService {
 
     void unlink(String address, int port, String infoHash);
 
-    ResponseEntity<PeerOnFile> announce(AnnounceDTO dto);
+    ResponseEntity<AnnounceResponseDTO> announce(AnnounceDTO dto);
 
     PeerOnFile createPOFByInfoHashAndPeerAddress(AnnounceDTO dto);
 

@@ -35,6 +35,26 @@ public class FileService implements IFileService {
     private UserRepository userRepository;
 
     @Override
+    public List<?> find_all() {
+        List<File> fileList = fileRepository.findAll();
+
+        List<FileResponseDto> responseDtos = new ArrayList<>();
+
+        for (File file : fileList) {
+            FileResponseDto dto = FileResponseDto.builder()
+                    .userId(file.getId())
+                    .hashInfo(file.getHashInfo())
+                    .size(file.getSize())
+                    .name(file.getName())
+                    .build();
+
+            responseDtos.add(dto);
+        }
+
+        return responseDtos;
+    }
+
+    @Override
     public List<?> search(String hashInfo) {
         List<FetchResponseDTO> responseList = new ArrayList<>();
 
