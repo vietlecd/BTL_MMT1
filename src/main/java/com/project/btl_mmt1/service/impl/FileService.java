@@ -75,6 +75,8 @@ public class FileService implements IFileService {
                     .address(peer.getAddress())
                     .port(peer.getPort())
                     .fullName(user_fullname)
+                    .fileName(file.getName())
+                    .fileSize(file.getSize())
                     .build();
             responseList.add(fetch);
         }
