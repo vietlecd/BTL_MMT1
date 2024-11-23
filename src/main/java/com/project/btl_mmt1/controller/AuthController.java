@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -53,8 +54,13 @@ public class AuthController {
         try {
             String token = authService.login(userLoginDTO);
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + token);
+
             // Trả về token trong response
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(token);
+            return ResponseEntity.status(HttpStatus.ACCEPTED)
+                    .headers(headers)
+                    .body("Login successfully: " + token);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

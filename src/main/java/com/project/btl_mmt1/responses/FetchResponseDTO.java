@@ -9,4 +9,6 @@ public class FetchResponseDTO {
     private String address;
     private long port;
     private String fullName;
+    private String fileName;
+    private long fileSize;
 }
