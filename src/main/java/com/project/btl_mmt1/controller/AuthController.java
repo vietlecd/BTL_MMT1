@@ -53,22 +53,21 @@ public class AuthController {
         try {
             String token = authService.login(userLoginDTO);
 
-            CookieUtil.setTokenCookie(token, response);
-
             // Trả về token trong response
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(token);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
-
-        // Xoa Cokie
-        CookieUtil.deleteTokenCookie(response);
-
-        return ResponseEntity.ok("Logged out successfully");
-    }
+//    @PostMapping("/logout")
+//    public ResponseEntity<?> logout(HttpServletResponse response) {
+//
+//        // Xoa Cokie
+//        //CookieUtil.deleteTokenCookie(response);
+//
+//
+//        return ResponseEntity.ok("Logged out successfully");
+//    }
 
 }

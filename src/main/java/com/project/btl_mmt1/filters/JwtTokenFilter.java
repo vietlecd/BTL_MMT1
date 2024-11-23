@@ -46,13 +46,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response); //enable bypass
                 return;
             }
-//            final String authHeader = request.getHeader("Authorization");
-//            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-//                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-//                return;
-//            }
-//            final String token = authHeader.substring(7);
-            String token = CookieUtil.getTokenCookieName(request);
+            final String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                return;
+            }
+            final String token = authHeader.substring(7);
+            //String token = CookieUtil.getTokenCookieName(request);
             final String username = jwtTokenUtil.extractUsername(token);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 User userDetails = (User) userDetailsService.loadUserByUsername(username);
