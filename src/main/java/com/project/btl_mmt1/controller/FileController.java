@@ -6,6 +6,7 @@ import com.project.btl_mmt1.models.File;
 import com.project.btl_mmt1.models.PeerOnFile;
 import com.project.btl_mmt1.models.User;
 import com.project.btl_mmt1.responses.AnnounceResponseDTO;
+import com.project.btl_mmt1.responses.FetchResponseDTO;
 import com.project.btl_mmt1.responses.FileResponseDto;
 import com.project.btl_mmt1.service.IFileService;
 import com.project.btl_mmt1.dto.AnnounceDTO;
@@ -46,7 +47,7 @@ public class FileController {
     @GetMapping("/fetch")
     public ResponseEntity<?> search(@RequestParam(required = false) String hashInfo) {
         try {
-            List<?> files = fileService.search(hashInfo);
+            FetchResponseDTO files = fileService.search(hashInfo);
             return ResponseEntity.ok(files);
         } catch (Error e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
