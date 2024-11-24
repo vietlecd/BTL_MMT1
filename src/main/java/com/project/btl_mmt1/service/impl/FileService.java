@@ -71,9 +71,12 @@ public class FileService implements IFileService {
 
         List<Peer> peerList = file.getPeers();
 
-        Map<String, Integer> peers = new HashMap<>();
+        List<Map<String, Object>> peers = new ArrayList<>();
         for (Peer peer : peerList) {
-            peers.put(peer.getAddress(), peer.getPort());
+            Map<String, Object> maps = new HashMap<>();
+            maps.put("address: ", peer.getAddress());
+            maps.put("port: ", peer.getPort());
+            peers.add(maps);
         }
 
 

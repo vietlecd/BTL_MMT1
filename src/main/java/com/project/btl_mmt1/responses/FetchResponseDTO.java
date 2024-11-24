@@ -12,7 +12,7 @@ public class FetchResponseDTO {
 //    private String address;
 //    private long port;
 
-    private Map<String, Integer> peers;
+    private List<Map<String, Object>> peers;
     private String fullName;
     private String fileName;
     private long fileSize;
