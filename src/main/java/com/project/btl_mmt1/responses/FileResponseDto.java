@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class FileResponseDto {
-    private String name;
+    private String fileName;
     private String hashInfo;
     private long size;
-    private long userId;
+    private String fullName;
 }
