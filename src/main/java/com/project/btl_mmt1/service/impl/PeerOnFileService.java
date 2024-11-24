@@ -49,7 +49,7 @@ public class PeerOnFileService implements IPeerOnFileService {
     public PeerOnFile update(Peer peer, File file, PeerRole role) {
         PeerOnFile peerOnFile = peerOnFileRepository.findByFileIdAndPeerId(file, peer);
         if (peerOnFile == null) {
-            throw new DataNotFoundException("PeerOnFile không tồn tại");
+            return create(file, peer, role);
         }
         peerOnFile.setPeerRole(role);
 
