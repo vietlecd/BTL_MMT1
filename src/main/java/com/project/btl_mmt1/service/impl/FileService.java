@@ -56,7 +56,7 @@ public class FileService implements IFileService {
     }
 
     @Override
-    public List<?> search(String hashInfo) {
+    public FetchResponseDTO search(String hashInfo) {
         List<FetchResponseDTO> responseList = new ArrayList<>();
 
         Optional<File> fileOptional =  fileRepository.findByHashInfo(hashInfo);
@@ -71,17 +71,20 @@ public class FileService implements IFileService {
 
         List<Peer> peerList = file.getPeers();
 
+        Map<String, Integer> peers = new HashMap<>();
         for (Peer peer : peerList) {
-            FetchResponseDTO fetch = FetchResponseDTO.builder()
-                    .address(peer.getAddress())
-                    .port(peer.getPort())
-                    .fullName(user_fullname)
-                    .fileName(file.getName())
-                    .fileSize(file.getSize())
-                    .build();
-            responseList.add(fetch);
+            peers.put(peer.getAddress(), peer.getPort());
         }
-        return responseList;
+
+
+        FetchResponseDTO res = FetchResponseDTO.builder()
+                .fullName(user_fullname)
+                .fileName(file.getName())
+                .fileSize(file.getSize())
+                .peers(peers)
+                .build();
+
+        return res;
     }
 
     @Override
