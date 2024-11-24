@@ -42,10 +42,11 @@ public class FileService implements IFileService {
 
         for (File file : fileList) {
             FileResponseDto dto = FileResponseDto.builder()
-                    .userId(file.getId())
+                    .fullName(file.getUser() != null && file.getUser().getFullName() != null
+                                ? file.getUser().getFullName() : null)
                     .hashInfo(file.getHashInfo())
                     .size(file.getSize())
-                    .name(file.getName())
+                    .fileName(file.getName())
                     .build();
 
             responseDtos.add(dto);
@@ -124,10 +125,10 @@ public class FileService implements IFileService {
 
 
         return FileResponseDto.builder()
-                .name(file.getName())
+                .fileName(file.getName())
                 .hashInfo(file.getHashInfo())
                 .size(file.getSize())
-                .userId(user.getId())
+                .fullName(user.getFullName())
                 .build();
     }
 
