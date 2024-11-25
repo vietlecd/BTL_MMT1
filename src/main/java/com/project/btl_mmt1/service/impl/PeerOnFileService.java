@@ -183,19 +183,20 @@ public class PeerOnFileService implements IPeerOnFileService {
 
     @Override
     public ResponseEntity<?> unLink(UnlinkDTO dto) {
-        Optional<Peer> peerOps = peerRepository.findByAddressAndPort(dto.getAddress(), dto.getPort());
-        if (peerOps.isEmpty()) {
+        Optional<Peer> peerOptional = peerRepository.findByAddressAndPort(dto.getAddress(), dto.getPort());
+        if (peerOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Khong the tim tha data Peer");
         }
-        Peer peer = peerOps.get();
+        Peer peer = peerOptional.get();
 
         Optional<File> fileOptional = fileRepository.findByHashInfo(dto.getInfoHash());
         if (fileOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Khong the tim tha data Peer");
         }
+        File file = fileOptional.get();
 
-        //PeerOnFile destroyPeer = peerOnFileRepository.
-return null;
+        peerOnFileRepository.deleteByPeerIdAndFileId(peer, file);
+        return ResponseEntity.ok("Xoa thanh cong link giua peer va file");
     }
 
 

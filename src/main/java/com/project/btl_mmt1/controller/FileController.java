@@ -1,5 +1,6 @@
 package com.project.btl_mmt1.controller;
 
+import com.project.btl_mmt1.dto.UnlinkDTO;
 import com.project.btl_mmt1.dto.UploadFileDto;
 import com.project.btl_mmt1.helpers.AuthenticationHelper;
 import com.project.btl_mmt1.models.File;
@@ -101,5 +102,10 @@ public class FileController {
     @GetMapping("/get/seeders")
     public ResponseEntity<?> getSeeders(@RequestParam String infoHash) {
         return ResponseEntity.ok(peerService.getSeeders(infoHash));
+    }
+
+    @PostMapping("/unlink")
+    public ResponseEntity<?> unLink(@RequestBody UnlinkDTO dto) {
+        return ResponseEntity.ok(peerOnFileService.unLink(dto));
     }
 }
