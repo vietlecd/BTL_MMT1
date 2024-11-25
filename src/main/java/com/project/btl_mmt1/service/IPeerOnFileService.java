@@ -1,6 +1,7 @@
 package com.project.btl_mmt1.service;
 
 import com.project.btl_mmt1.dto.AnnounceDTO;
+import com.project.btl_mmt1.dto.UnlinkDTO;
 import com.project.btl_mmt1.models.File;
 import com.project.btl_mmt1.models.Peer;
 import com.project.btl_mmt1.models.PeerOnFile;
@@ -23,4 +24,6 @@ public interface IPeerOnFileService {
     PeerOnFile createPOFByInfoHashAndPeerAddress(AnnounceDTO dto);
 
     ScrapeDTO scrape(String infoHash);
+    
+    ResponseEntity<?> unLink(UnlinkDTO dto);
 }
