@@ -2,10 +2,6 @@ package com.project.btl_mmt1.controller;
 
 import com.project.btl_mmt1.dto.UnlinkDTO;
 import com.project.btl_mmt1.dto.UploadFileDto;
-import com.project.btl_mmt1.helpers.AuthenticationHelper;
-import com.project.btl_mmt1.models.File;
-import com.project.btl_mmt1.models.PeerOnFile;
-import com.project.btl_mmt1.models.User;
 import com.project.btl_mmt1.responses.AnnounceResponseDTO;
 import com.project.btl_mmt1.responses.FetchResponseDTO;
 import com.project.btl_mmt1.responses.FileResponseDto;
@@ -13,13 +9,10 @@ import com.project.btl_mmt1.service.IFileService;
 import com.project.btl_mmt1.dto.AnnounceDTO;
 import com.project.btl_mmt1.service.IPeerOnFileService;
 import com.project.btl_mmt1.service.IPeerService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,7 +25,6 @@ import java.util.Map;
 public class FileController {
 
     private final IFileService fileService;
-    private final AuthenticationHelper authenticationHelper;
     private final IPeerOnFileService peerOnFileService;
     private final IPeerService peerService;
 
@@ -55,15 +47,9 @@ public class FileController {
         }
     }
     @PostMapping("/publish")
-    public ResponseEntity<?> upload(@RequestBody UploadFileDto uploadFileDto,Authentication authentication) {
+    public ResponseEntity<?> upload(@RequestBody UploadFileDto uploadFileDto) {
         try {
-            User user = null;
-
-            if ( authentication != null ){
-                user = authenticationHelper.getUser(authentication);
-            }
-
-            FileResponseDto file = fileService.create(uploadFileDto, user);
+            FileResponseDto file = fileService.create(uploadFileDto);
 
             return ResponseEntity.status(201).body(file);
         } catch (ResponseStatusException e) {

@@ -9,5 +9,4 @@ public class FileResponseDto {
     private String fileName;
     private String hashInfo;
     private long size;
-    private String fullName;
 }

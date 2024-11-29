@@ -42,8 +42,6 @@ public class FileService implements IFileService {
 
         for (File file : fileList) {
             FileResponseDto dto = FileResponseDto.builder()
-                    .fullName(file.getUser() != null && file.getUser().getFullName() != null
-                                ? file.getUser().getFullName() : null)
                     .hashInfo(file.getHashInfo())
                     .size(file.getSize())
                     .fileName(file.getName())
@@ -66,9 +64,6 @@ public class FileService implements IFileService {
 
         File file = fileOptional.get();
 
-        User user = file.getUser();
-        String user_fullname = user.getFullName();
-
         List<Peer> peerList = file.getPeers();
 
         List<Map<String, Object>> peers = new ArrayList<>();
@@ -81,7 +76,6 @@ public class FileService implements IFileService {
 
 
         FetchResponseDTO res = FetchResponseDTO.builder()
-                .fullName(user_fullname)
                 .fileName(file.getName())
                 .fileSize(file.getSize())
                 .peers(peers)
@@ -91,18 +85,13 @@ public class FileService implements IFileService {
     }
 
     @Override
-    public FileResponseDto create(UploadFileDto dto, User user) {
-        if (user != null && !userRepository.existsByUsername(user.getUsername())) {
-            throw new DataNotFoundException("Khong tim thay Username nay");
-        }
-
+    public FileResponseDto create(UploadFileDto dto) {
         Optional<File> fileOps = fileRepository.findByHashInfo(dto.getHashInfo());
         File file = fileOps.orElseGet(() -> {
             File newFile = File.builder()
                     .hashInfo(dto.getHashInfo())
                     .name(dto.getName())
                     .size(dto.getSize())
-                    .user(user)
                     .build();
             return fileRepository.save(newFile); // Lưu vào DB
         });
@@ -134,7 +123,6 @@ public class FileService implements IFileService {
                 .fileName(file.getName())
                 .hashInfo(file.getHashInfo())
                 .size(file.getSize())
-                .fullName(user.getFullName())
                 .build();
     }
 
