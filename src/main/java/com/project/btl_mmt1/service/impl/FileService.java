@@ -1,28 +1,18 @@
 package com.project.btl_mmt1.service.impl;
-import com.project.btl_mmt1.customexceptions.DataNotFoundException;
-import com.project.btl_mmt1.customexceptions.InvalidParamException;
-import com.project.btl_mmt1.customexceptions.PermissionDenyException;
-import com.project.btl_mmt1.dto.AnnounceDTO;
 import com.project.btl_mmt1.dto.UploadFileDto;
 import com.project.btl_mmt1.models.*;
 import com.project.btl_mmt1.repositories.FileRepository;
 import com.project.btl_mmt1.repositories.PeerOnFileRepository;
 import com.project.btl_mmt1.repositories.PeerRepository;
-import com.project.btl_mmt1.repositories.UserRepository;
 import com.project.btl_mmt1.responses.FetchResponseDTO;
 import com.project.btl_mmt1.responses.FileResponseDto;
 import com.project.btl_mmt1.service.IFileService;
 import com.project.btl_mmt1.service.IPeerOnFileService;
 import com.project.btl_mmt1.service.IPeerService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -32,7 +22,6 @@ public class FileService implements IFileService {
     private PeerOnFileRepository peerOnFileRepository;
     private IPeerOnFileService peerOnFileService;
     private PeerRepository peerRepository;
-    private UserRepository userRepository;
 
     @Override
     public List<?> find_all() {
@@ -42,8 +31,6 @@ public class FileService implements IFileService {
 
         for (File file : fileList) {
             FileResponseDto dto = FileResponseDto.builder()
-                    .fullName(file.getUser() != null && file.getUser().getFullName() != null
-                                ? file.getUser().getFullName() : null)
                     .hashInfo(file.getHashInfo())
                     .size(file.getSize())
                     .fileName(file.getName())
@@ -66,9 +53,6 @@ public class FileService implements IFileService {
 
         File file = fileOptional.get();
 
-        User user = file.getUser();
-        String user_fullname = user.getFullName();
-
         List<Peer> peerList = file.getPeers();
 
         List<Map<String, Object>> peers = new ArrayList<>();
@@ -81,7 +65,6 @@ public class FileService implements IFileService {
 
 
         FetchResponseDTO res = FetchResponseDTO.builder()
-                .fullName(user_fullname)
                 .fileName(file.getName())
                 .fileSize(file.getSize())
                 .peers(peers)
@@ -91,18 +74,13 @@ public class FileService implements IFileService {
     }
 
     @Override
-    public FileResponseDto create(UploadFileDto dto, User user) {
-        if (user != null && !userRepository.existsByUsername(user.getUsername())) {
-            throw new DataNotFoundException("Khong tim thay Username nay");
-        }
-
+    public FileResponseDto create(UploadFileDto dto) {
         Optional<File> fileOps = fileRepository.findByHashInfo(dto.getHashInfo());
         File file = fileOps.orElseGet(() -> {
             File newFile = File.builder()
                     .hashInfo(dto.getHashInfo())
                     .name(dto.getName())
                     .size(dto.getSize())
-                    .user(user)
                     .build();
             return fileRepository.save(newFile); // Lưu vào DB
         });
@@ -134,7 +112,6 @@ public class FileService implements IFileService {
                 .fileName(file.getName())
                 .hashInfo(file.getHashInfo())
                 .size(file.getSize())
-                .fullName(user.getFullName())
                 .build();
     }
 

@@ -23,10 +23,6 @@ public class File {
 
     private long size;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
     @ManyToMany(mappedBy = "files")
     private List<Peer> peers;
 }

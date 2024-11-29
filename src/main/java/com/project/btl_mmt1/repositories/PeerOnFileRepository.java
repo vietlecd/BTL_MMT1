@@ -17,4 +17,6 @@ public interface PeerOnFileRepository extends JpaRepository<PeerOnFile, Long> {
     List<PeerOnFile> findAllByFileIdAndPeerRole(File fileId, PeerRole peerRole);
 
     void deleteByPeerIdAndFileId(Peer peerId, File fileId);
+
+//    void deleteByPeerPortAndPeerAddress(Peer peerPort, Peer peerAddress);
 }

@@ -2,6 +2,7 @@ package com.project.btl_mmt1.service.impl;
 
 import com.project.btl_mmt1.customexceptions.DataNotFoundException;
 import com.project.btl_mmt1.dto.AnnounceDTO;
+import com.project.btl_mmt1.dto.UnlinkDTO;
 import com.project.btl_mmt1.models.File;
 import com.project.btl_mmt1.models.Peer;
 import com.project.btl_mmt1.models.PeerOnFile;
@@ -178,6 +179,24 @@ public class PeerOnFileService implements IPeerOnFileService {
                 .build();
         return scrapeDTO;
 
+    }
+
+    @Override
+    public ResponseEntity<?> unLink(UnlinkDTO dto) {
+        Optional<Peer> peerOptional = peerRepository.findByAddressAndPort(dto.getAddress(), dto.getPort());
+        if (peerOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Khong the tim tha data Peer");
+        }
+        Peer peer = peerOptional.get();
+
+        Optional<File> fileOptional = fileRepository.findByHashInfo(dto.getInfoHash());
+        if (fileOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Khong the tim tha data Peer");
+        }
+        File file = fileOptional.get();
+
+        peerOnFileRepository.deleteByPeerIdAndFileId(peer, file);
+        return ResponseEntity.ok("Xoa thanh cong link giua peer va file");
     }
 
 
