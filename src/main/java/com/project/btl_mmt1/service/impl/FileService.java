@@ -1,28 +1,18 @@
 package com.project.btl_mmt1.service.impl;
-import com.project.btl_mmt1.customexceptions.DataNotFoundException;
-import com.project.btl_mmt1.customexceptions.InvalidParamException;
-import com.project.btl_mmt1.customexceptions.PermissionDenyException;
-import com.project.btl_mmt1.dto.AnnounceDTO;
 import com.project.btl_mmt1.dto.UploadFileDto;
 import com.project.btl_mmt1.models.*;
 import com.project.btl_mmt1.repositories.FileRepository;
 import com.project.btl_mmt1.repositories.PeerOnFileRepository;
 import com.project.btl_mmt1.repositories.PeerRepository;
-import com.project.btl_mmt1.repositories.UserRepository;
 import com.project.btl_mmt1.responses.FetchResponseDTO;
 import com.project.btl_mmt1.responses.FileResponseDto;
 import com.project.btl_mmt1.service.IFileService;
 import com.project.btl_mmt1.service.IPeerOnFileService;
 import com.project.btl_mmt1.service.IPeerService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -32,7 +22,6 @@ public class FileService implements IFileService {
     private PeerOnFileRepository peerOnFileRepository;
     private IPeerOnFileService peerOnFileService;
     private PeerRepository peerRepository;
-    private UserRepository userRepository;
 
     @Override
     public List<?> find_all() {
