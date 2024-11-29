@@ -80,11 +80,6 @@ public class FileController {
 
     }
 
-    @GetMapping("/scrape")
-    public ResponseEntity<?> scrape(@RequestParam String infoHash) {
-        return ResponseEntity.ok(peerOnFileService.scrape(infoHash));
-    }
-
     @GetMapping("/get/seeders")
     public ResponseEntity<?> getSeeders(@RequestParam String infoHash) {
         return ResponseEntity.ok(peerService.getSeeders(infoHash));

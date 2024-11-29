@@ -17,13 +17,7 @@ public interface IPeerOnFileService {
 
     PeerOnFile update(Peer peer, File file, PeerRole role);
 
-    void unlink(String address, int port, String infoHash);
-
     ResponseEntity<AnnounceResponseDTO> announce(AnnounceDTO dto);
-
-    PeerOnFile createPOFByInfoHashAndPeerAddress(AnnounceDTO dto);
-
-    ScrapeDTO scrape(String infoHash);
     
     ResponseEntity<?> unLink(UnlinkDTO dto);
 }
