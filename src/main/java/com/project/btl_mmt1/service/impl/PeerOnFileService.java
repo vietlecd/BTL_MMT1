@@ -58,17 +58,6 @@ public class PeerOnFileService implements IPeerOnFileService {
     }
 
     @Override
-    public void unlink(String address, int port, String infoHash) {
-        Peer existedPeer = peerRepository.findByAddressAndPort(address, port)
-                .orElseThrow(() -> new DataNotFoundException("Peer không tồn tại"));
-
-        File existedFile = fileRepository.findByHashInfo(infoHash)
-                .orElseThrow(() -> new DataNotFoundException("File không tồn tại"));
-
-        peerOnFileRepository.deleteByPeerIdAndFileId(existedPeer, existedFile);
-    }
-
-    @Override
     public ResponseEntity<AnnounceResponseDTO> announce(AnnounceDTO dto) {
 
         File existedFile = fileRepository.findByHashInfo(dto.getInfoHash())
@@ -120,65 +109,6 @@ public class PeerOnFileService implements IPeerOnFileService {
         }
 
         throw new IllegalArgumentException("Invalid status: " + dto.getStatus());
-    }
-
-    @Override
-    public PeerOnFile createPOFByInfoHashAndPeerAddress(AnnounceDTO dto) {
-        try {
-            Peer existedPeer = peerService.findByAddressAndPort(dto.getPeerAddress(), dto.getPeerPort());
-            if (existedPeer == null) {
-                existedPeer = peerService.create(dto.getPeerAddress(), dto.getPeerPort());
-            }
-
-            File file = fileRepository.findByHashInfo(dto.getInfoHash()).orElseGet(() -> {
-                File newFile = new File();
-                newFile.setHashInfo(dto.getInfoHash());
-
-
-                return fileRepository.save(newFile);
-            });
-
-            PeerOnFile peerOnFile = peerOnFileRepository.findByFileIdAndPeerId(file, existedPeer);
-            if (peerOnFile != null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Announcing failed since your upload has been recorded before");
-            }
-
-
-            if (existedPeer.getFiles() == null) {
-                existedPeer.setFiles(new ArrayList<>());
-            }
-            existedPeer.getFiles().add(file);
-            peerRepository.save(existedPeer);
-
-            peerOnFile = create(file, existedPeer, PeerRole.SEEDER);
-
-            return peerOnFile;
-        } catch (ResponseStatusException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
-        }
-    }
-
-    @Override
-    public ScrapeDTO scrape(String infoHash) {
-        // Tìm file dựa trên infoHash
-        Optional<File> existedFile = fileRepository.findByHashInfo(infoHash);
-        if (existedFile.isEmpty()) {
-            throw new DataNotFoundException("Khong tim thay file");
-        }
-
-        File file = existedFile.get();
-
-        PeerOnFile peersOnFile = peerOnFileRepository.findByFileId(file);
-
-        ScrapeDTO scrapeDTO = ScrapeDTO.builder()
-                .fileId(peersOnFile.getFileId().getId())
-                .peerId(peersOnFile.getPeerId().getId())
-                .peerRole(peersOnFile.getPeerRole())
-                .build();
-        return scrapeDTO;
-
     }
 
     @Override
